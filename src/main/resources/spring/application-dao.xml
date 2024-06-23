@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+    <!--加载db.properties配置-->
+    <context:property-placeholder location="classpath:db.properties"/>
+    <!--数据源 c3p0连接池-->
+    <bean class="com.mchange.v2.c3p0.ComboPooledDataSource" id="dataSource">
+       <property name="driverClass" value='${driverClass}'/>
+        <property name="jdbcUrl" value='${jdbcUrl}'/>
+        <property name="user" value='${user}'/>
+        <property name="password" value='${password}'/>
+    </bean>
+    <!--Spring整合mybatis-->
+    <bean class="org.mybatis.spring.SqlSessionFactoryBean" id="sqlSessionFactory">
+        <!--注入数据源-->
+        <property name="dataSource" ref="dataSource"/>
+        <!--加载mybatis全局配置文件-->
+        <property name="configLocation" value="classpath:mybatis/sqlMapConfig.xml"/>
+        <!--配置别名-->
+        <property name="typeAliasesPackage" value="com.ssm.pojo"/>
+        
+        <!--配置setting中的延迟加载-->
+        <!--        <property name="configurationProperties">-->
+        <!--            <props>-->
+        <!--                <prop key="lazyLoadingEnabled">true</prop>-->
+        <!--            </props>-->
+        <!--        </property>-->
+    </bean>
+    <!--自动为mapper设置mapper代理 -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.ssm.mapper"/>
+    </bean>
+</beans>
